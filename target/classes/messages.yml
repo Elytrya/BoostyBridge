@@ -1,0 +1,51 @@
+
+# support: hex
+
+#general
+prefix: "&#FFB6C1[BoostyBridge] &f"
+no_permission: "&fУ вас нет прав для выполнения этой команды!"
+unknown_command: "&fНеизвестная подкоманда. Используйте &#FFB6C1/boosty reload"
+
+# /boosty reload
+reload_success: "&fКонфигурация и токены успешно обновлены!"
+reload_fail: "&fОшибка при обновлении токенов. Проверьте консоль."
+
+# help
+help_menu:
+  - "&f--- &#FFB6C1Помощь по BoostyBridge &f---"
+  - "&#FFB6C1/boosty link <ник> &f- Привязать аккаунт"
+  - "&#FFB6C1/boosty info &f- Информация о вашей привязке"
+help_menu_admin:
+  - "&#FFB6C1/boosty admin &f- Команды администратора"
+
+# /boosty link
+link_usage: "&fИспользование: &#FFB6C1/boosty link <ник_на_бусти>"
+link_success: "&fВаш аккаунт успешно привязан к Boosty: &#FFB6C1%name%"
+link_not_found: "&fПользователь с ником &#FFB6C1%name% &fне найден в списке подписчиков бусти."
+link_already_linked: "&fЭтот аккаунт Boosty уже привязан к другому игроку!"
+link_already_yours: "&fВы уже привязали свой аккаунт!"
+link_error: "&fОшибка при проверке подписки."
+link_email_prompt: "&fЭтот аккаунт привязан к почте. Напишите её в чат для подтверждения (у вас 60 секунд):"
+link_email_fail: "&fПочта указана неверно. Привязка &#FFB6C1отменена&f."
+
+# /boosty info
+info_linked: "&fВаш аккаунт привязан к Boosty: &#FFB6C1%boosty% &f(Подписка: &#FFB6C1%level%&f)"
+info_not_linked: "&fУ вас нет привязанного аккаунта Boosty."
+
+# /boosty admin
+admin_unlink_success: "&fАккаунт игрока &#FFB6C1%player% &fуспешно отвязан."
+admin_unlink_not_linked: "&fИгрок &#FFB6C1%player% &fне имеет привязки."
+admin_info_linked: "&fИгрок: &#FFB6C1%player%&f\nBoosty: &#FFB6C1%boosty%&f\nПодписка: &#FFB6C1%level%"
+admin_info_not_linked: "&fИгрок &#FFB6C1%player% &fне имеет привязки."
+admin_forcelink_success: "&fАккаунт &#FFB6C1%boosty% &fпринудительно привязан к &#FFB6C1%player%&f."
+
+# notify
+admin_notify_unlinked: "&fАдминистратор &#FFB6C1%admin% &fотвязал ваш аккаунт Boosty."
+admin_notify_forcelinked: "&fАдминистратор &#FFB6C1%admin% &fпринудительно привязал вам аккаунт Boosty: &#FFB6C1%boosty%&f."
+
+# etc
+congratulation_message:
+  - "&f▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+  - " &fИгрок &#FFB6C1{nickname} &fпривязал Boosty!"
+  - " &fУровень подписки: &#FFB6C1{level_name}"
+  - "&f▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"

@@ -1,0 +1,13 @@
+main: onevnl.ru.elytrya.BoostyBridge
+version: 1.0.0-SNAPSHOT
+name: BoostyBridge
+author: elytrya
+api-version: 1.21
+commands:
+  boosty:
+    description: Основная команда плагина BoostyBridge
+    permission: boosty.admin
+permissions:
+  boosty.admin:
+    description: Доступ к управлению плагином
+    default: op

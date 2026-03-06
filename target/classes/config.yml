@@ -1,0 +1,62 @@
+auth:
+  # en:
+  # Instructions for retrieving the data:
+  # 1. Log in to boosty.to using your account.
+  # 2. Press F12 (Developer Tools) and go to the "Storage" tab.
+  # 3. In the left menu, find the section "Local Storage" -> "https://boosty.to".
+  # 4. In the list, find the key "auth" and copy its entire value 
+  #    (it starts with {%22accessToken%22...). Paste this value into the auth_data field.
+  # 5. In the same place, find the key "_clientId" and copy its value into the client_id field.
+  # https://ibb.co/DHTK13NQ
+  # IMPORTANT: DO NOT SHARE THIS DATA WITH ANYONE!!!!
+
+  # ru:
+  # Инструкция по получению данных:
+  # 1. Зайдите на boosty.to под своим аккаунтом.
+  # 2. Нажмите F12 (Инструменты разработчика) и перейдите во вкладку "Storage".
+  # 3. Слева в меню найдите раздел "Local Storage" -> "https://boosty.to".
+  # 4. В списке найдите ключ "auth" и скопируйте его значение целиком 
+  #    (оно начинается с {%22accessToken%22...). Вставьте это значение в поле auth_data.
+  # 5. Там же найдите ключ "_clientId" и скопируйте его значение в поле client_id.
+  # https://ibb.co/DHTK13NQ 
+  # ВАЖНО: НИКОМУ НЕ ПЕРЕДАВАЙТЕ ЭТИ ДАННЫЕ!!!!
+
+  auth_data: '{%22accessToken%22:%22YOUR_ACCESS_TOKEN%22%2C%22refreshToken%22:%22YOUR_REFRESH_TOKEN%22%2C%22expiresAt%22:1234567890000%2C%22isNewUser%22:false}' # replace!!
+  client_id: 'YOUR_CLIENT_ID' # replace!!
+# ---
+
+
+
+database:
+  type: "SQLITE" # or MYSQL
+  mysql: # if mysql
+    host: "127.0.0.1"
+    port: 3306
+    database: "boosty"
+    username: "root"
+    password: "password"
+
+
+rewards:
+  "Спонсор +":
+    congratulation: true # - changed in messages.yml (congratulation_message)
+    give:
+      - "say спонсор+"
+    take:
+      - "say забран"
+  "none":
+    congratulation: false
+    give:
+      - "say %player% просто отслеживает блог!"
+    take:
+      - "say %player% перестал отслеживать блог!"
+
+sync: 
+  # Интервал синхронизации активных подписок (в минутах)
+  # Active subscriptions synchronization interval (in minutes)
+  interval_minutes: 60   
+
+# проверять ли почту пользователя, если мы ее знаем?
+# check the user's email if it is known?
+verify_email: true 
+debug: false
