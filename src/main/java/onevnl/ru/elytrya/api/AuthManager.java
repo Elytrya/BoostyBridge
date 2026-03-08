@@ -69,7 +69,7 @@ public class AuthManager {
 
     public CompletableFuture<Void> checkAndRefreshToken() {
         if (accessToken == null || accessToken.isEmpty()) {
-            client.getPlugin().getLogger().warning("Auth data is not configured correctly in config.yml!");
+            client.getPlugin().getLogger().severe("Token is missing! Please specify auth_data in config.yml!");
             return CompletableFuture.completedFuture(null);
         }
 
@@ -79,7 +79,7 @@ public class AuthManager {
         }
 
         if (clientId == null || clientId.isEmpty() || clientId.contains("вставьте")) {
-            client.getPlugin().getLogger().warning("Client ID is not configured correctly!");
+            client.getPlugin().getLogger().severe("Invalid Client ID! Please specify client_id in config.yml!");
             return CompletableFuture.completedFuture(null);
         }
 
@@ -105,15 +105,17 @@ public class AuthManager {
                             this.refreshToken = data.get("refresh_token").getAsString();
                             this.expiresAt = System.currentTimeMillis() + 604800000L;
                             saveAuth();
+                        } else if (response.statusCode() == 401 || response.statusCode() == 403) {
+                            client.getPlugin().getLogger().severe("Boosty token is invalid (401/403 error)! Please update auth_data in config.yml!");
                         } else {
-                            client.getPlugin().getLogger().warning("Failed to refresh token. Status: " + response.statusCode());
+                            client.getPlugin().getLogger().warning("Failed to refresh token. Response code: " + response.statusCode());
                         }
                     });
         } catch (IllegalArgumentException e) {
-            client.getPlugin().getLogger().severe("Invalid characters in tokens! Check your config.yml. Error: " + e.getMessage());
+            client.getPlugin().getLogger().severe("Invalid characters in token! Check config.yml. Error: " + e.getMessage());
             return CompletableFuture.completedFuture(null);
         } catch (Exception e) {
-            client.getPlugin().getLogger().severe("Unexpected error while refreshing token: " + e.getMessage());
+            client.getPlugin().getLogger().severe("Unknown error while refreshing token: " + e.getMessage());
             return CompletableFuture.completedFuture(null);
         }
     }

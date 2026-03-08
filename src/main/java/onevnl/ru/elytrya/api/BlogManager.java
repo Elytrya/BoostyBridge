@@ -46,6 +46,9 @@ public class BlogManager {
 
         return client.getHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> {
+                    if (response.statusCode() == 401 || response.statusCode() == 403) {
+                        client.getPlugin().getLogger().severe("Authorization token is invalid (401/403 error)!");
+                    }
                     Pattern pattern = Pattern.compile("data-test-id=\"MAINFEED:ownBlogButton\"[^>]*href=\"([^\"]+)\"");
                     Matcher matcher = pattern.matcher(response.body());
                     if (matcher.find()) {
@@ -78,6 +81,9 @@ public class BlogManager {
 
             return client.getHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenApply(response -> {
+                        if (response.statusCode() == 401 || response.statusCode() == 403) {
+                            client.getPlugin().getLogger().severe("Invalid token while fetching stats (401/403 error)!");
+                        }
                         if (response.statusCode() == 200) {
                             return client.getGson().fromJson(response.body(), JsonObject.class);
                         }
@@ -100,6 +106,9 @@ public class BlogManager {
 
         return client.getHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenCompose(response -> {
+                    if (response.statusCode() == 401 || response.statusCode() == 403) {
+                        client.getPlugin().getLogger().severe("Invalid token while checking subscriber (401/403 error)!");
+                    }
                     client.debug("Response code: " + response.statusCode());
                     if (response.statusCode() == 200) {
                         JsonObject json = client.getGson().fromJson(response.body(), JsonObject.class);
@@ -152,6 +161,9 @@ public class BlogManager {
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("Authorization", "Bearer " + auth.getAccessToken()).header("X-App", "web").GET().build();
 
         return client.getHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenCompose(response -> {
+            if (response.statusCode() == 401 || response.statusCode() == 403) {
+                client.getPlugin().getLogger().severe("Invalid token during synchronization (401/403 error)!");
+            }
             if (response.statusCode() == 200) {
                 JsonObject json = client.getGson().fromJson(response.body(), JsonObject.class);
                 if (json.has("data")) {
