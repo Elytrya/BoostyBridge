@@ -3,6 +3,7 @@
 
 [![Version](https://img.shields.io/badge/version-a0.1-orange)](#)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![CodeFactor](https://www.codefactor.io/repository/github/elytrya/boostybridge/badge)](https://www.codefactor.io/repository/github/elytrya/boostybridge)
 [![Language](https://img.shields.io/badge/language-Java_17+-red)](#)
 [![Platform](https://img.shields.io/badge/platform-Spigot_|_Paper_1.21+-green)](https://papermc.io/)
 
