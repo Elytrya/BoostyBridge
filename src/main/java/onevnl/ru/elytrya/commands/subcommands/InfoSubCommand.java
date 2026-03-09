@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import onevnl.ru.elytrya.api.BoostyClient;
-import onevnl.ru.elytrya.api.BoostyUser;
+import onevnl.ru.elytrya.models.BoostyUser;
 
 public class InfoSubCommand implements SubCommand {
 

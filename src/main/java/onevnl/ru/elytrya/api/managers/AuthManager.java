@@ -1,4 +1,4 @@
-package onevnl.ru.elytrya.api;
+package onevnl.ru.elytrya.api.managers;
 
 import java.net.URI;
 import java.net.URLDecoder;
@@ -11,6 +11,8 @@ import java.util.concurrent.CompletableFuture;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import com.google.gson.JsonObject;
+
+import onevnl.ru.elytrya.api.BoostyClient;
 
 public class AuthManager {
 

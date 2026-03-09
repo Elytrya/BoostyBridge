@@ -1,4 +1,4 @@
-package onevnl.ru.elytrya.api;
+package onevnl.ru.elytrya.api.managers;
 
 import java.io.File;
 import java.util.Collections;

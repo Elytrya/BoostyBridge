@@ -13,12 +13,12 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import onevnl.ru.elytrya.api.BoostyClient;
-import onevnl.ru.elytrya.api.BoostyUser;
 import onevnl.ru.elytrya.commands.subcommands.AdminSubCommand;
 import onevnl.ru.elytrya.commands.subcommands.InfoSubCommand;
 import onevnl.ru.elytrya.commands.subcommands.LinkSubCommand;
 import onevnl.ru.elytrya.commands.subcommands.ReloadSubCommand;
 import onevnl.ru.elytrya.commands.subcommands.SubCommand;
+import onevnl.ru.elytrya.models.BoostyUser;
 
 public class BoostyCommand implements CommandExecutor, TabCompleter {
 

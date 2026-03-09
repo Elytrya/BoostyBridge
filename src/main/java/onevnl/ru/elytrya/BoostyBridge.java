@@ -1,9 +1,12 @@
 package onevnl.ru.elytrya;
 
+import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import onevnl.ru.elytrya.api.BoostyClient;
 import onevnl.ru.elytrya.commands.BoostyCommand;
+import onevnl.ru.elytrya.hooks.PlaceholderProcessor;
 import onevnl.ru.elytrya.listeners.ChatListener;
 
 public class BoostyBridge extends JavaPlugin {
@@ -18,6 +21,18 @@ public class BoostyBridge extends JavaPlugin {
 
         getCommand("boosty").setExecutor(new BoostyCommand(this.boostyClient));
         getServer().getPluginManager().registerEvents(new ChatListener(this.boostyClient), this);
+
+
+        if (getConfig().getBoolean("bstats", true)) {
+            int pluginId = 30011; 
+            new Metrics(this, pluginId);
+            getLogger().info("bStats metrics enabled.");
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderProcessor(boostyClient).register();
+            getLogger().info("PlaceholderAPI expansion registered successfully.");
+        }
 
         getLogger().info("Checking Boosty authorization...");
         
@@ -38,8 +53,6 @@ public class BoostyBridge extends JavaPlugin {
                         getLogger().severe("[EN] Please retrieve new data from your browser and update config.yml");
                         getLogger().severe("=====================================================");
                 }
-                    
-                
             } else if (stats != null) {
                 getLogger().info("Successfully connected to Boosty! Token is valid.");
             } else {

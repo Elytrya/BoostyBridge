@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 import com.google.gson.JsonObject;
 
 import onevnl.ru.elytrya.api.BoostyClient;
-import onevnl.ru.elytrya.api.MessageManager;
-import onevnl.ru.elytrya.api.PendingLink;
+import onevnl.ru.elytrya.api.managers.MessageManager;
+import onevnl.ru.elytrya.models.PendingLink;
 
 public class LinkSubCommand implements SubCommand {
 

@@ -9,9 +9,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.gson.Gson;
 
+import onevnl.ru.elytrya.api.managers.AuthManager;
+import onevnl.ru.elytrya.api.managers.BlogManager;
+import onevnl.ru.elytrya.api.managers.MessageManager;
 import onevnl.ru.elytrya.database.Database;
 import onevnl.ru.elytrya.database.MySQL;
 import onevnl.ru.elytrya.database.SQLite;
+import onevnl.ru.elytrya.models.PendingLink;
 
 public class BoostyClient {
 

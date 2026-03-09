@@ -1,4 +1,4 @@
-package onevnl.ru.elytrya.api;
+package onevnl.ru.elytrya.models;
 
 import java.util.UUID;
 

@@ -3,7 +3,7 @@ package onevnl.ru.elytrya.commands.subcommands;
 import org.bukkit.command.CommandSender;
 
 import onevnl.ru.elytrya.api.BoostyClient;
-import onevnl.ru.elytrya.api.MessageManager;
+import onevnl.ru.elytrya.api.managers.MessageManager;
 
 public class ReloadSubCommand implements SubCommand {
 

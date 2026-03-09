@@ -1,4 +1,4 @@
-package onevnl.ru.elytrya.api;
+package onevnl.ru.elytrya.api.managers;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -10,6 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.gson.JsonObject;
+
+import onevnl.ru.elytrya.api.BoostyClient;
 
 public class BlogManager {
 

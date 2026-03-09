@@ -12,8 +12,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import onevnl.ru.elytrya.api.BoostyClient;
-import onevnl.ru.elytrya.api.MessageManager;
-import onevnl.ru.elytrya.api.PendingLink;
+import onevnl.ru.elytrya.api.managers.MessageManager;
+import onevnl.ru.elytrya.models.PendingLink;
 
 public class ChatListener implements Listener {
 

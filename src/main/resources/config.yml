@@ -56,7 +56,19 @@ sync:
   # Active subscriptions synchronization interval (in minutes)
   interval_minutes: 60   
 
+# Discord Webhooks
+# (in a0.4)
+#discord:
+ # enabled: true
+ # webhook_url: "https://discord.com/"
+ # embed_color: "#ff8c00"
+ # message: "🎉 Player: **{player}**; lvl: **{level}**!" 
+ 
+
+
 # проверять ли почту пользователя, если мы ее знаем?
 # check the user's email if it is known?
 verify_email: true 
+
 debug: false
+bstats: true # bStats metrics

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import onevnl.ru.elytrya.api.BoostyUser;
+import onevnl.ru.elytrya.models.BoostyUser;
 
 public class SQLite implements Database {
 
@@ -74,7 +74,40 @@ public class SQLite implements Database {
             e.printStackTrace();
         }
     }
+    @Override
+        public BoostyUser getUser(UUID uuid) {
+            String sql = "SELECT * FROM boosty_links WHERE uuid = ?";
+            try (java.sql.PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, uuid.toString());
+                try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return new BoostyUser(
+                            uuid,
+                            rs.getString("player_name"),
+                            rs.getString("boosty_name"),
+                            rs.getString("level_name")
+                        );
+                    }
+                }
+            } catch (java.sql.SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
+    @Override
+        public int getActiveSubscribersCount() {
+            String sql = "SELECT COUNT(*) FROM boosty_links WHERE level_name != 'none'";
+            try (java.sql.PreparedStatement stmt = connection.prepareStatement(sql);
+                java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1); 
+                }
+            } catch (java.sql.SQLException e) {
+                e.printStackTrace();
+            }
+            return 0;
+        }
     @Override
     public String getBoostyName(UUID uuid) {
         try (PreparedStatement statement = connection.prepareStatement("SELECT boosty_name FROM boosty_links WHERE uuid = ?")) {

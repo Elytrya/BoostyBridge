@@ -3,7 +3,7 @@ package onevnl.ru.elytrya.tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import onevnl.ru.elytrya.api.BoostyClient;
-import onevnl.ru.elytrya.api.BoostyUser;
+import onevnl.ru.elytrya.models.BoostyUser;
 
 import java.util.List;
 import java.util.Map;

@@ -3,7 +3,7 @@ package onevnl.ru.elytrya.database;
 import java.util.List;
 import java.util.UUID;
 
-import onevnl.ru.elytrya.api.BoostyUser;
+import onevnl.ru.elytrya.models.BoostyUser; 
 
 public interface Database {
     void connect();
@@ -14,4 +14,6 @@ public interface Database {
     List<BoostyUser> getAllUsers();
     void removeLink(UUID uuid);
     void updateLevel(UUID uuid, String levelName);
+    int getActiveSubscribersCount();
+    BoostyUser getUser(UUID uuid);
 }
