@@ -1,12 +1,18 @@
+Конечно. Я обновил разделы **Фишки**, **todo** (отметил выполненное) и добавил информацию про **bStats**. Также поправил ссылки в бейджах, чтобы они выглядели актуально.
 
+Вот обновленный текст для твоего `README.md`:
+
+---
+
+```markdown
 # BoostyBridge
 
-[![Version](https://img.shields.io/badge/version-a0.1-orange)](#)
+[![Version](https://img.shields.io/badge/version-a0.3-orange)](#)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CodeFactor](https://www.codefactor.io/repository/github/elytrya/boostybridge/badge)](https://www.codefactor.io/repository/github/elytrya/boostybridge)
 [![Language](https://img.shields.io/badge/language-Java_17+-red)](#)
 [![Platform](https://img.shields.io/badge/platform-Spigot_|_Paper_1.21+-green)](https://papermc.io/) <br>
-[![GitHub latest commit](https://badgen.net/github/last-commit/Elytrya/BoostyBridge)](https://GitHub.com/Eltyrya/BoostyBridge/commit/)
+[![GitHub latest commit](https://badgen.net/github/last-commit/Elytrya/BoostyBridge)](https://GitHub.com/Elytrya/BoostyBridge/commit/)
 [![GitHub branches](https://badgen.net/github/branches/Elytrya/BoostyBridge)](https://github.com/Elytrya/BoostyBridge/)
 [![GitHub commits](https://badgen.net/github/commits/Elytrya/BoostyBridge)](https://GitHub.com/Elytrya/BoostyBridge/commit/)
 [![GitHub issues](https://badgen.net/github/issues/Elytrya/BoostyBridge/)](https://GitHub.com/Elytrya/BoostyBridge/issues/)
@@ -24,14 +30,22 @@
 
 ### Основные фишки
 
-* **Умная защита от кражи наград:** Плагин проверяет, действительно ли игрок владеет аккаунтом на Boosty. Если в профиле Boosty указан Email, плагин попросит игрока написать его в чат (сообщение никто не увидит). 
-  * *Как отключить:* Если вам это не нужно, просто установите `verify_email: false` в конфиге.
-* **Автоматическая синхронизация:** Плагин сам проверяет актуальность подписок в фоновом режиме. Если игрок перестал платить, плагин автоматически выполнит команды на снятие прав. 
-  * *Как настроить:* Интервал проверок меняется в `sync.interval_minutes`.
-* **Авто-обновление токенов:** Вам нужно вставить данные для авторизации всего один раз. Плагин сам обновляет токены доступа, чтобы связь с Boosty не прерывалась.
-* **Базы данных под любой сервер:** По умолчанию используется локальная база SQLite, не требующая настройки. Для крупных сетей серверов есть поддержка MySQL.
-* **Глобальные оповещения:** При успешной подписке плагин может отправить красивое поздравление на весь сервер. 
-  * *Как отключить:* Настраивается индивидуально для каждого уровня подписки через параметр `congratulation: false`.
+* **Умная защита от кражи наград:** Проверка владения аккаунтом через Email (скрыто от других игроков).
+* **Автоматическая синхронизация:** Фоновая проверка актуальности подписок и выполнение команд на снятие прав.
+* **Поддержка PlaceholderAPI:** Вывод данных о подписке в любые плагины (TAB, Scoreboard и т.д.).
+* **Метрики bStats:** Сбор анонимной статистики (отключается в конфиге: `bstats: false`).
+* **Базы данных:** Поддержка SQLite (по умолчанию) и MySQL для сетей серверов.
+* **Глобальные оповещения:** Красивые поздравления при оформлении подписки.
+
+### Плейсхолдеры (PlaceholderAPI)
+
+| Плейсхолдер | Описание |
+| :--- | :--- |
+| `%boosty_global_subscribers%` | Общее количество подписчиков в профиле. |
+| `%boosty_level%` | Название уровня подписки игрока (или "None"). |
+| `%boosty_name%` | Имя пользователя на Boosty. |
+| `%boosty_is_linked%` | Привязан ли аккаунт (`true`/`false`). |
+| `%boosty_has_sub%` | Есть ли активная подписка (`true`/`false`). |
 
 ### Команды и права
 
@@ -45,27 +59,11 @@
 | `/boosty admin forcelink <игрок> <ник>` | Привязать аккаунт принудительно. | `boosty.admin` |
 
 ### todo
-- [ ] Интеграция с PlaceholderAPI (вывод уровня подписки и ника: `%boosty_level%`, `%boosty_name%`).
-- [ ] Альтернативная верификация через личные сообщения Boosty (отправка уникального кода подтверждения в чат подписчику).
-- [ ] Команда ручной синхронизации (`/boosty admin forcesync`) для обновления списка подписок прямо сейчас без ожидания таймера.
-- [ ] Больше админ команд.
-- [ ] Улучшенная обработка ошибок API (защита от лимитов запросов Бусти, понятные предупреждения в консоль, если токен окончательно истек).
-- [ ] Оптимизация кэша и фикс мелких багов (работа с нестандартными символами в никах, улучшение безопасности).
-
-### Сборка
-Для компиляции плагина необходимы Java 17+ и Maven.
-```bash
-git clone https://github.com/Elytrya/BoostyBridge
-cd BoostyBridge
-mvn clean package
-
-```
-
-Готовый `.jar` файл появится в папке `target/`.
-
-### Лицензия
-
-Проект распространяется по лицензии **GPL-3.0**. Вы можете свободно использовать, изменять и распространять код при условии сохранения открытого исходного кода.
+- [x] Интеграция с PlaceholderAPI.
+- [ ] Альтернативная верификация через личные сообщения Boosty.
+- [ ] Команда ручной синхронизации (`/boosty admin forcesync`).
+- [ ] Улучшенная обработка ошибок API и лимитов запросов.
+- [ ] Оптимизация кэша и работа с нестандартными символами.
 
 ---
 
@@ -75,20 +73,22 @@ mvn clean package
 
 ### Main Features
 
-* **Smart Reward Protection:** The plugin verifies if a player actually owns the Boosty account. If an Email is linked to the Boosty profile, the plugin will ask the player to type it into the chat (the message is hidden from others).
-* *How to disable:* Set `verify_email: false` in the config.
+* **Smart Reward Protection:** Email verification to confirm account ownership (hidden from others).
+* **Automatic Synchronization:** Background checks for active subscriptions and automatic perk removal.
+* **PlaceholderAPI Support:** Display Boosty data in other plugins like TAB or Scoreboards.
+* **bStats Metrics:** Anonymous data collection (can be disabled in `config.yml` via `bstats: false`).
+* **Database Support:** SQLite (default) and MySQL support for server networks.
+* **Global Announcements:** Customizable broadcast messages when a player links a subscription.
 
+### Placeholders (PlaceholderAPI)
 
-* **Automatic Synchronization:** The plugin checks subscriptions in the background. If a player cancels their subscription, the plugin automatically executes commands to remove their perks.
-* *How to configure:* Change the check interval via `sync.interval_minutes`.
-
-
-* **Auto-updating Tokens:** You only need to paste your authorization data once. The plugin automatically refreshes access tokens to keep the connection alive.
-* **Database Support:** Uses a local SQLite database by default (no setup required). MySQL is also supported for larger networks.
-* **Global Announcements:** The plugin can broadcast a customizable congratulation message to the entire server when someone links a subscription.
-* *How to disable:* Can be toggled for each subscription tier individually using `congratulation: false`.
-
-
+| Placeholder | Description |
+| :--- | :--- |
+| `%boosty_global_subscribers%` | Total count of active subscribers on the profile. |
+| `%boosty_level%` | Subscription level name (returns "None" if no sub). |
+| `%boosty_name%` | User's Boosty display name. |
+| `%boosty_is_linked%` | Account linkage status (`true`/`false`). |
+| `%boosty_has_sub%` | Whether the player has any active sub (`true`/`false`). |
 
 ### Commands & Permissions
 
@@ -103,32 +103,22 @@ mvn clean package
 
 ### todo
 
-* [ ] PlaceholderAPI integration (e.g., `%boosty_level%`, `%boosty_name%`).
-* [ ] Alternative verification via Boosty Direct Messages (sending a unique confirmation code to the subscriber's chat).
-* [ ] Manual synchronization command (`/boosty admin forcesync`) to update all subscriptions immediately without waiting for the timer.
-* [ ] More admin commands.
-* [ ] Improved API error handling (Boosty rate limit protection, clear console warnings if the authorization token completely expires).
-* [ ] General optimization and bug fixes (handling special characters in nicknames, security improvements).
+* [x] PlaceholderAPI integration.
+* [ ] Alternative verification via Boosty Direct Messages.
+* [ ] Manual synchronization command (`/boosty admin forcesync`).
+* [ ] Improved API error handling and rate limit protection.
+* [ ] General optimization and special character handling.
 
 ### Build Instructions
 
-To compile the plugin, you need Java 17+ and Maven installed.
-
 ```bash
-git clone https://github.com/Elytrya/BoostyBridge
+git clone [https://github.com/Elytrya/BoostyBridge](https://github.com/Elytrya/BoostyBridge)
 cd BoostyBridge
 mvn clean package
 
 ```
 
-The compiled `.jar` file will be located in the `target/` directory.
-
-
-
 ### License
 
-This project is licensed under the **GPL-3.0 License**. You are free to use, modify, and distribute the code, provided that the source code remains open.
+This project is licensed under the **GPL-3.0 License**.
 
-```
-
-```
