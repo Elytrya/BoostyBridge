@@ -85,7 +85,7 @@ public class BoostyCommand implements CommandExecutor, TabCompleter {
     private void handleAdminTab(List<String> list, String[] args) {
         if (args.length == 2) {
             String input = args[1].toLowerCase();
-            for (String s : new String[]{"unlink", "info", "forcelink"}) {
+            for (String s : new String[]{"unlink", "info", "forcelink","forcesync"}) {
                 if (s.startsWith(input)) {
                     list.add(s);
                 }

@@ -57,7 +57,7 @@
 ### todo
 - [x] Интеграция с PlaceholderAPI.
 - [ ] Альтернативная верификация через личные сообщения Boosty.
-- [ ] Команда ручной синхронизации (`/boosty admin forcesync`).
+- [x] Команда ручной синхронизации (`/boosty admin forcesync`).
 - [ ] Улучшенная обработка ошибок API и лимитов запросов.
 - [ ] Оптимизация кэша и работа с нестандартными символами.
 
@@ -101,7 +101,7 @@
 
 * [x] PlaceholderAPI integration.
 * [ ] Alternative verification via Boosty Direct Messages.
-* [ ] Manual synchronization command (`/boosty admin forcesync`).
+* [x] Manual synchronization command (`/boosty admin forcesync`).
 * [ ] Improved API error handling and rate limit protection.
 * [ ] General optimization and special character handling.
 

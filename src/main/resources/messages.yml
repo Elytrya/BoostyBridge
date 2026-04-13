@@ -39,6 +39,10 @@ admin_info_linked: "&fИгрок: &#FFB6C1%player%&f\nBoosty: &#FFB6C1%boosty%&f
 admin_info_not_linked: "&fИгрок &#FFB6C1%player% &fне имеет привязки."
 admin_forcelink_success: "&fАккаунт &#FFB6C1%boosty% &fпринудительно привязан к &#FFB6C1%player%&f."
 
+#/boosty admin forcelink
+admin_forcesync_started: "&fЗапуск &#FFB6C1принудительной &fсинхронизации всех игроков..."
+admin_forcesync_async: "&fПроцесс запущен &#FFB6C1асинхронно. &fПроверьте консоль для деталей."
+
 # notify
 admin_notify_unlinked: "&fАдминистратор &#FFB6C1%admin% &fотвязал ваш аккаунт Boosty."
 admin_notify_forcelinked: "&fАдминистратор &#FFB6C1%admin% &fпринудительно привязал вам аккаунт Boosty: &#FFB6C1%boosty%&f."

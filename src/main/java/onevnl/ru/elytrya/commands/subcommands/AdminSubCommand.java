@@ -48,6 +48,9 @@ public class AdminSubCommand implements SubCommand {
             case "forcelink":
                 handleForceLink(sender, args);
                 break;
+            case "forcesync":
+                new ForceSyncSubCommand(client).execute(sender, args);
+                break;
             default:
                 sender.sendMessage("§cНеизвестная подкоманда.");
                 break;
