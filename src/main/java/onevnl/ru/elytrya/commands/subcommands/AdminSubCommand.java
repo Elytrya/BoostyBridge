@@ -34,7 +34,7 @@ public class AdminSubCommand implements SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage("Использование: /boosty admin <unlink|info|forcelink>");
+            sender.sendMessage("§cИспользование: /boosty admin <unlink|info|forcelink>");
             return;
         }
         String action = args[1].toLowerCase();
@@ -49,14 +49,14 @@ public class AdminSubCommand implements SubCommand {
                 handleForceLink(sender, args);
                 break;
             default:
-                sender.sendMessage("Неизвестная подкоманда.");
+                sender.sendMessage("§cНеизвестная подкоманда.");
                 break;
         }
     }
 
     private void handleUnlink(CommandSender sender, String[] args) {
         if (args.length < 3) {
-            sender.sendMessage("Использование: /boosty admin unlink <игрок>");
+            sender.sendMessage("§cИспользование: /boosty admin unlink <игрок>");
             return;
         }
         String targetName = args[2];
@@ -72,7 +72,7 @@ public class AdminSubCommand implements SubCommand {
 
     private void handleInfo(CommandSender sender, String[] args) {
         if (args.length < 3) {
-            sender.sendMessage("Использование: /boosty admin info <игрок>");
+            sender.sendMessage("§cИспользование: /boosty admin info <игрок>");
             return;
         }
         BoostyUser user = findUser(args[2]);
@@ -88,7 +88,7 @@ public class AdminSubCommand implements SubCommand {
 
     private void handleForceLink(CommandSender sender, String[] args) {
         if (args.length < 4) {
-            sender.sendMessage("Использование: /boosty admin forcelink <игрок> <boosty_name>");
+            sender.sendMessage("§cИспользование: /boosty admin forcelink <игрок> <boosty_name>");
             return;
         }
         String targetName = args[2];
@@ -99,20 +99,25 @@ public class AdminSubCommand implements SubCommand {
         client.getBlogManager().getSubscriberData(boostyName).thenAccept(subData -> {
             String levelName = extractLevel(subData);
             client.getDatabase().saveLink(target.getUniqueId(), finalPlayerName, boostyName, levelName);
-            sender.sendMessage(client.getMessageManager().getMessage("admin_forcelink_success").replace("%player%", finalPlayerName).replace("%boosty%", boostyName));
+            sender.sendMessage(client.getMessageManager().getMessage("admin_forcelink_success")
+                .replace("%player%", finalPlayerName).replace("%boosty%", boostyName));
+            
             if (target.isOnline()) {
-                target.getPlayer().sendMessage(client.getMessageManager().getMessage("admin_notify_forcelinked").replace("%admin%", sender.getName()).replace("%boosty%", boostyName));
+                target.getPlayer().sendMessage(client.getMessageManager().getMessage("admin_notify_forcelinked")
+                    .replace("%admin%", sender.getName()).replace("%boosty%", boostyName));
             }
             client.getMessageManager().broadcastCongratulation(finalPlayerName, levelName);
             executeRewards(finalPlayerName, boostyName, levelName);
         }).exceptionally(ex -> {
-            sender.sendMessage("Ошибка: " + ex.getMessage());
+            sender.sendMessage("§cОшибка: " + ex.getMessage());
             return null;
         });
     }
 
     private BoostyUser findUser(String name) {
-        return client.getDatabase().getAllUsers().stream().filter(u -> u.playerName().equalsIgnoreCase(name)).findFirst().orElse(null);
+        return client.getDatabase().getAllUsers().stream()
+            .filter(u -> u.playerName().equalsIgnoreCase(name))
+            .findFirst().orElse(null);
     }
 
     private void notifyUnlink(UUID uuid, String admin) {

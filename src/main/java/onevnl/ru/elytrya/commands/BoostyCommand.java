@@ -32,41 +32,74 @@ public class BoostyCommand implements CommandExecutor, TabCompleter {
         registerSubCommand(new AdminSubCommand(client));
     }
 
-    private void registerSubCommand(SubCommand sub) { subCommands.put(sub.getName(), sub); }
+    private void registerSubCommand(SubCommand sub) {
+        subCommands.put(sub.getName(), sub);
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 0) return false;
+        if (args.length == 0) {
+            sendHelp(sender);
+            return true;
+        }
+
         SubCommand sub = subCommands.get(args[0].toLowerCase());
         if (sub != null && (sub.getPermission() == null || sender.hasPermission(sub.getPermission()))) {
             sub.execute(sender, args);
         } else {
-            sender.sendMessage("§cНедостаточно прав или неизвестная команда.");
+            sender.sendMessage("§cНеизвестная команда или недостаточно прав.");
         }
         return true;
     }
 
+    private void sendHelp(CommandSender sender) {
+        sender.sendMessage("§6§lBoostyBridge §7- Помощь");
+        sender.sendMessage("§e/boosty link <имя> §7- Привязать аккаунт");
+        sender.sendMessage("§e/boosty info §7- Инфо о подписке");
+        if (sender.hasPermission("boosty.admin")) {
+            sender.sendMessage("§c/boosty admin §7- Админ-команды");
+            sender.sendMessage("§c/boosty reload §7- Перезагрузить конфиг");
+        }
+    }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        List<String> list = new ArrayList<>();
+        List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            subCommands.keySet().stream().filter(s -> s.startsWith(args[0].toLowerCase())).forEach(list::add);
+            String input = args[0].toLowerCase();
+            subCommands.keySet().stream().filter(s -> s.startsWith(input)).forEach(completions::add);
         } else if (args.length >= 2 && args[0].equalsIgnoreCase("admin") && sender.hasPermission("boosty.admin")) {
-            handleAdminTab(list, args);
+            handleAdminTab(completions, args);
         }
-        return list;
+        return completions;
     }
 
     private void handleAdminTab(List<String> list, String[] args) {
         if (args.length == 2) {
-            for (String s : new String[]{"unlink", "info", "forcelink"}) if (s.startsWith(args[1].toLowerCase())) list.add(s);
-        } else if (args.length == 3) {
-            String sub = args[1].toLowerCase();
-            if (sub.equals("unlink") || sub.equals("info")) {
-                client.getDatabase().getAllUsers().stream().map(BoostyUser::playerName).filter(n -> n.toLowerCase().startsWith(args[2].toLowerCase())).forEach(list::add);
-            } else if (sub.equals("forcelink")) {
-                Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(n -> n.toLowerCase().startsWith(args[2].toLowerCase())).forEach(list::add);
+            String input = args[1].toLowerCase();
+            for (String s : new String[]{"unlink", "info", "forcelink"}) {
+                if (s.startsWith(input)) {
+                    list.add(s);
+                }
             }
+        } else if (args.length == 3) {
+            handlePlayerTab(list, args);
+        }
+    }
+
+    private void handlePlayerTab(List<String> list, String[] args) {
+        String sub = args[1].toLowerCase();
+        String input = args[2].toLowerCase();
+        if (sub.equals("unlink") || sub.equals("info")) {
+            client.getDatabase().getAllUsers().stream()
+                .map(BoostyUser::playerName)
+                .filter(n -> n.toLowerCase().startsWith(input))
+                .forEach(list::add);
+        } else if (sub.equals("forcelink")) {
+            Bukkit.getOnlinePlayers().stream()
+                .map(Player::getName)
+                .filter(n -> n.toLowerCase().startsWith(input))
+                .forEach(list::add);
         }
     }
 }
