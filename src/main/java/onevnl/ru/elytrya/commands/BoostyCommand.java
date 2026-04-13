@@ -53,14 +53,22 @@ public class BoostyCommand implements CommandExecutor, TabCompleter {
     }
 
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage("§6§lBoostyBridge §7- Помощь");
-        sender.sendMessage("§e/boosty link <имя> §7- Привязать аккаунт");
-        sender.sendMessage("§e/boosty info §7- Инфо о подписке");
-        if (sender.hasPermission("boosty.admin")) {
-            sender.sendMessage("§c/boosty admin §7- Админ-команды");
-            sender.sendMessage("§c/boosty reload §7- Перезагрузить конфиг");
+            List<String> userHelp = client.getMessageManager().getMessageList("help_menu");
+            if (userHelp != null) {
+                for (String line : userHelp) {
+                    sender.sendMessage(line);
+                }
+            }
+
+            if (sender.hasPermission("boosty.admin")) {
+                List<String> adminHelp = client.getMessageManager().getMessageList("help_menu_admin");
+                if (adminHelp != null) {
+                    for (String line : adminHelp) {
+                        sender.sendMessage(line);
+                    }
+                }
+            }
         }
-    }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

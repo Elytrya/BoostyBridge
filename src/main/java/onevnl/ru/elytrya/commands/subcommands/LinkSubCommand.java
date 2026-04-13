@@ -36,7 +36,7 @@ public class LinkSubCommand implements SubCommand {
         MessageManager msg = client.getMessageManager();
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("Только для игроков.");
+            sender.sendMessage("only for players <3");
             return;
         }
 
