@@ -21,7 +21,6 @@ import onevnl.ru.elytrya.commands.subcommands.SubCommand;
 import onevnl.ru.elytrya.models.BoostyUser;
 
 public class BoostyCommand implements CommandExecutor, TabCompleter {
-
     private final BoostyClient client;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
 
@@ -33,73 +32,41 @@ public class BoostyCommand implements CommandExecutor, TabCompleter {
         registerSubCommand(new AdminSubCommand(client));
     }
 
-    private void registerSubCommand(SubCommand subCommand) {
-        subCommands.put(subCommand.getName().toLowerCase(), subCommand);
-    }
-
-    private void sendHelp(CommandSender sender) {
-        for (String line : client.getMessageManager().getMessageList("help_menu")) {
-            sender.sendMessage(line);
-        }
-        if (sender.hasPermission("boosty.admin")) {
-            for (String line : client.getMessageManager().getMessageList("help_menu_admin")) {
-                sender.sendMessage(line);
-            }
-        }
-    }
+    private void registerSubCommand(SubCommand sub) { subCommands.put(sub.getName(), sub); }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 0) {
-            sendHelp(sender);
-            return true;
+        if (args.length == 0) return false;
+        SubCommand sub = subCommands.get(args[0].toLowerCase());
+        if (sub != null && (sub.getPermission() == null || sender.hasPermission(sub.getPermission()))) {
+            sub.execute(sender, args);
+        } else {
+            sender.sendMessage("§cНедостаточно прав или неизвестная команда.");
         }
-
-        SubCommand subCommand = subCommands.get(args[0].toLowerCase());
-
-        if (subCommand == null) {
-            sendHelp(sender);
-            return true;
-        }
-
-        if (subCommand.getPermission() != null && !sender.hasPermission(subCommand.getPermission())) {
-            sender.sendMessage(client.getMessageManager().getMessage("no_permission"));
-            return true;
-        }
-
-        subCommand.execute(sender, args);
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        List<String> completions = new ArrayList<>();
-
+        List<String> list = new ArrayList<>();
         if (args.length == 1) {
-            if ("link".startsWith(args[0].toLowerCase())) completions.add("link");
-            if ("info".startsWith(args[0].toLowerCase())) completions.add("info");
-            if (sender.hasPermission("boosty.admin")) {
-                if ("admin".startsWith(args[0].toLowerCase())) completions.add("admin");
-                if ("reload".startsWith(args[0].toLowerCase())) completions.add("reload");
-            }
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("admin") && sender.hasPermission("boosty.admin")) {
-            if ("unlink".startsWith(args[1].toLowerCase())) completions.add("unlink");
-            if ("info".startsWith(args[1].toLowerCase())) completions.add("info");
-            if ("forcelink".startsWith(args[1].toLowerCase())) completions.add("forcelink");
-        } else if (args.length == 3 && args[0].equalsIgnoreCase("admin") && (args[1].equalsIgnoreCase("unlink") || args[1].equalsIgnoreCase("info")) && sender.hasPermission("boosty.admin")) {
-            for (BoostyUser user : client.getDatabase().getAllUsers()) {
-                if (user.playerName().toLowerCase().startsWith(args[2].toLowerCase())) {
-                    completions.add(user.playerName());
-                }
-            }
-        } else if (args.length == 3 && args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("forcelink") && sender.hasPermission("boosty.admin")) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (p.getName().toLowerCase().startsWith(args[2].toLowerCase())) {
-                    completions.add(p.getName());
-                }
+            subCommands.keySet().stream().filter(s -> s.startsWith(args[0].toLowerCase())).forEach(list::add);
+        } else if (args.length >= 2 && args[0].equalsIgnoreCase("admin") && sender.hasPermission("boosty.admin")) {
+            handleAdminTab(list, args);
+        }
+        return list;
+    }
+
+    private void handleAdminTab(List<String> list, String[] args) {
+        if (args.length == 2) {
+            for (String s : new String[]{"unlink", "info", "forcelink"}) if (s.startsWith(args[1].toLowerCase())) list.add(s);
+        } else if (args.length == 3) {
+            String sub = args[1].toLowerCase();
+            if (sub.equals("unlink") || sub.equals("info")) {
+                client.getDatabase().getAllUsers().stream().map(BoostyUser::playerName).filter(n -> n.toLowerCase().startsWith(args[2].toLowerCase())).forEach(list::add);
+            } else if (sub.equals("forcelink")) {
+                Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(n -> n.toLowerCase().startsWith(args[2].toLowerCase())).forEach(list::add);
             }
         }
-
-        return completions;
     }
 }
