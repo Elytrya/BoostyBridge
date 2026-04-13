@@ -34,7 +34,7 @@ public class AdminSubCommand implements SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage("§cИспользование: /boosty admin <unlink|info|forcelink>");
+            sender.sendMessage("§cИспользование: /boosty admin <unlink|info|forcelink|forcesync>");
             return;
         }
         String action = args[1].toLowerCase();
