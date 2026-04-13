@@ -17,10 +17,19 @@ import onevnl.ru.elytrya.models.BoostyUser;
 public class AdminSubCommand implements SubCommand {
     private final BoostyClient client;
 
-    public AdminSubCommand(BoostyClient client) { this.client = client; }
+    public AdminSubCommand(BoostyClient client) {
+        this.client = client;
+    }
 
-    @Override public String getName() { return "admin"; }
-    @Override public String getPermission() { return "boosty.admin"; }
+    @Override
+    public String getName() {
+        return "admin";
+    }
+
+    @Override
+    public String getPermission() {
+        return "boosty.admin";
+    }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
@@ -28,11 +37,20 @@ public class AdminSubCommand implements SubCommand {
             sender.sendMessage("Использование: /boosty admin <unlink|info|forcelink>");
             return;
         }
-        switch (args[1].toLowerCase()) {
-            case "unlink": handleUnlink(sender, args); break;
-            case "info": handleInfo(sender, args); break;
-            case "forcelink": handleForceLink(sender, args); break;
-            default: sender.sendMessage("Неизвестная подкоманда."); break;
+        String action = args[1].toLowerCase();
+        switch (action) {
+            case "unlink":
+                handleUnlink(sender, args);
+                break;
+            case "info":
+                handleInfo(sender, args);
+                break;
+            case "forcelink":
+                handleForceLink(sender, args);
+                break;
+            default:
+                sender.sendMessage("Неизвестная подкоманда.");
+                break;
         }
     }
 
@@ -42,7 +60,7 @@ public class AdminSubCommand implements SubCommand {
             return;
         }
         String targetName = args[2];
-        BoostyUser user = findUserByName(targetName);
+        BoostyUser user = findUser(targetName);
         if (user != null) {
             client.getDatabase().removeLink(user.uuid());
             sender.sendMessage(client.getMessageManager().getMessage("admin_unlink_success").replace("%player%", user.playerName()));
@@ -57,10 +75,12 @@ public class AdminSubCommand implements SubCommand {
             sender.sendMessage("Использование: /boosty admin info <игрок>");
             return;
         }
-        BoostyUser user = findUserByName(args[2]);
+        BoostyUser user = findUser(args[2]);
         if (user != null) {
             sender.sendMessage(client.getMessageManager().getMessage("admin_info_linked")
-                    .replace("%player%", user.playerName()).replace("%boosty%", user.boostyName()).replace("%level%", user.levelName()));
+                    .replace("%player%", user.playerName())
+                    .replace("%boosty%", user.boostyName())
+                    .replace("%level%", user.levelName()));
         } else {
             sender.sendMessage(client.getMessageManager().getMessage("admin_info_not_linked").replace("%player%", args[2]));
         }
@@ -74,34 +94,40 @@ public class AdminSubCommand implements SubCommand {
         String targetName = args[2];
         String boostyName = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
-        String finalName = target.getName() != null ? target.getName() : targetName;
+        String finalPlayerName = target.getName() != null ? target.getName() : targetName;
 
         client.getBlogManager().getSubscriberData(boostyName).thenAccept(subData -> {
-            String level = extractLevelName(subData);
-            client.getDatabase().saveLink(target.getUniqueId(), finalName, boostyName, level);
-            sender.sendMessage(client.getMessageManager().getMessage("admin_forcelink_success").replace("%player%", finalName).replace("%boosty%", boostyName));
-            if (target.isOnline()) target.getPlayer().sendMessage(client.getMessageManager().getMessage("admin_notify_forcelinked").replace("%admin%", sender.getName()).replace("%boosty%", boostyName));
-            client.getMessageManager().broadcastCongratulation(finalName, level);
-            executeRewards(finalName, boostyName, level);
+            String levelName = extractLevel(subData);
+            client.getDatabase().saveLink(target.getUniqueId(), finalPlayerName, boostyName, levelName);
+            sender.sendMessage(client.getMessageManager().getMessage("admin_forcelink_success").replace("%player%", finalPlayerName).replace("%boosty%", boostyName));
+            if (target.isOnline()) {
+                target.getPlayer().sendMessage(client.getMessageManager().getMessage("admin_notify_forcelinked").replace("%admin%", sender.getName()).replace("%boosty%", boostyName));
+            }
+            client.getMessageManager().broadcastCongratulation(finalPlayerName, levelName);
+            executeRewards(finalPlayerName, boostyName, levelName);
         }).exceptionally(ex -> {
             sender.sendMessage("Ошибка: " + ex.getMessage());
             return null;
         });
     }
 
-    private BoostyUser findUserByName(String name) {
+    private BoostyUser findUser(String name) {
         return client.getDatabase().getAllUsers().stream().filter(u -> u.playerName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
     private void notifyUnlink(UUID uuid, String admin) {
         Player p = Bukkit.getPlayer(uuid);
-        if (p != null && p.isOnline()) p.sendMessage(client.getMessageManager().getMessage("admin_notify_unlinked").replace("%admin%", admin));
+        if (p != null && p.isOnline()) {
+            p.sendMessage(client.getMessageManager().getMessage("admin_notify_unlinked").replace("%admin%", admin));
+        }
     }
 
-    private String extractLevelName(JsonObject subData) {
+    private String extractLevel(JsonObject subData) {
         if (subData != null && subData.has("level") && !subData.get("level").isJsonNull()) {
-            JsonObject lvl = subData.getAsJsonObject("level");
-            if (lvl.has("name") && !lvl.get("name").isJsonNull()) return lvl.get("name").getAsString();
+            JsonObject levelObj = subData.getAsJsonObject("level");
+            if (levelObj.has("name") && !levelObj.get("name").isJsonNull()) {
+                return levelObj.get("name").getAsString();
+            }
         }
         return "none";
     }

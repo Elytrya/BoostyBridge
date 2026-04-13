@@ -1,3 +1,4 @@
+C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\api\BoostyApiClient.java
 C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\api\BoostyClient.java
 C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\api\managers\AuthManager.java
 C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\api\managers\BlogManager.java
@@ -11,6 +12,7 @@ C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\comm
 C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\commands\subcommands\LinkSubCommand.java
 C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\commands\subcommands\ReloadSubCommand.java
 C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\commands\subcommands\SubCommand.java
+C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\database\AbstractDatabase.java
 C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\database\Database.java
 C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\database\MySQL.java
 C:\Users\sorok\Music\onevnl-pl\BoostyBridge\src\main\java\onevnl\ru\elytrya\database\SQLite.java
