@@ -8,6 +8,7 @@ onevnl\ru\elytrya\database\Database.class
 onevnl\ru\elytrya\BoostyBridge.class
 onevnl\ru\elytrya\api\managers\DiscordManager.class
 onevnl\ru\elytrya\commands\subcommands\AdminSubCommand.class
+onevnl\ru\elytrya\api\managers\BoostyDMManager.class
 onevnl\ru\elytrya\commands\subcommands\InfoSubCommand.class
 onevnl\ru\elytrya\hooks\PlaceholderProcessor.class
 onevnl\ru\elytrya\database\MySQL.class

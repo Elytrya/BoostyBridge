@@ -41,20 +41,19 @@ public class ChatListener implements Listener {
         
         MessageManager msg = client.getMessageManager();
 
-        client.debug("Player " + player.getName() + " entered email for verification.");
-        client.debug("-> Expected: '" + pending.email() + "'");
-        client.debug("-> Received (raw): '" + rawInput + "'");
-        client.debug("-> Received (stripped): '" + input + "'");
+        client.debug("Player " + player.getName() + " entered verification data.");
+        client.debug("=> Expected: '" + pending.verificationValue() + "' (type: " + pending.verificationType() + ")");
+        client.debug("=> Received (stripped): '" + input + "'");
 
         client.getPlugin().getServer().getScheduler().runTask(client.getPlugin(), () -> {
-            if (input.equalsIgnoreCase(pending.email())) {
-                client.debug("Email match successful!");
+            if (input.equalsIgnoreCase(pending.verificationValue())) {
+                client.debug("Verification successful!");
                 client.getDatabase().saveLink(player.getUniqueId(), player.getName(), pending.boostyName(), pending.levelName());
                 player.sendMessage(msg.getMessage("link_success").replace("%name%", pending.boostyName()));
                 msg.broadcastCongratulation(player.getName(), pending.levelName());
                 executeRewards(player, pending.boostyName(), pending.levelName());
             } else {
-                client.debug("Email mismatch! Verification failed.");
+                client.debug("Verification failed.");
                 player.sendMessage(msg.getMessage("link_email_fail"));
             }
         });

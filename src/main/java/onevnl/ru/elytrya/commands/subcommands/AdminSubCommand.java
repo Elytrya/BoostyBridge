@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import com.google.gson.JsonObject;
 
 import onevnl.ru.elytrya.api.BoostyClient;
+import onevnl.ru.elytrya.api.managers.MessageManager;
 import onevnl.ru.elytrya.models.BoostyUser;
 
 public class AdminSubCommand implements SubCommand {
@@ -33,10 +34,12 @@ public class AdminSubCommand implements SubCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        MessageManager msg = client.getMessageManager();
         if (args.length < 2) {
-            sender.sendMessage("§cИспользование: /boosty admin <unlink|info|forcelink|forcesync>");
+            sender.sendMessage(msg.getMessage("error_use_admin"));
             return;
         }
+
         String action = args[1].toLowerCase();
         switch (action) {
             case "unlink":
@@ -52,67 +55,95 @@ public class AdminSubCommand implements SubCommand {
                 new ForceSyncSubCommand(client).execute(sender, args);
                 break;
             default:
-                sender.sendMessage("§cНеизвестная подкоманда.");
+                sender.sendMessage(msg.getMessage("error_not_found"));
                 break;
         }
     }
 
     private void handleUnlink(CommandSender sender, String[] args) {
+        MessageManager msg = client.getMessageManager();
         if (args.length < 3) {
-            sender.sendMessage("§cИспользование: /boosty admin unlink <игрок>");
+            sender.sendMessage(msg.getMessage("error_use_unlink"));
             return;
         }
+
         String targetName = args[2];
-        BoostyUser user = findUser(targetName);
+        boolean silent = args.length > 3 && args[3].equalsIgnoreCase("-s");
+
+        BoostyUser user = client.getDatabase().getAllUsers().stream()
+                .filter(u -> u.playerName().equalsIgnoreCase(targetName))
+                .findFirst().orElse(null);
+
         if (user != null) {
+            String notifyType = silent ? "unsubscription" : "admin_unlink";
+            client.getDiscordManager().sendNotification(notifyType, user.playerName(), user.boostyName(), user.levelName());
+            
             client.getDatabase().removeLink(user.uuid());
-            sender.sendMessage(client.getMessageManager().getMessage("admin_unlink_success").replace("%player%", user.playerName()));
-            notifyUnlink(user.uuid(), sender.getName());
+            
+            sender.sendMessage(msg.getMessage("admin_unlink_success").replace("%player%", user.playerName()));
+            if (!silent) {
+                notifyUnlink(user.uuid(), sender.getName());
+            }
         } else {
-            sender.sendMessage(client.getMessageManager().getMessage("admin_unlink_not_linked").replace("%player%", targetName));
+            sender.sendMessage(msg.getMessage("admin_unlink_not_linked").replace("%player%", targetName));
         }
     }
 
     private void handleInfo(CommandSender sender, String[] args) {
+        MessageManager msg = client.getMessageManager();
         if (args.length < 3) {
-            sender.sendMessage("§cИспользование: /boosty admin info <игрок>");
+            sender.sendMessage(msg.getMessage("error_use_info"));
             return;
         }
         BoostyUser user = findUser(args[2]);
         if (user != null) {
-            sender.sendMessage(client.getMessageManager().getMessage("admin_info_linked")
+            sender.sendMessage(msg.getMessage("admin_info_linked")
                     .replace("%player%", user.playerName())
                     .replace("%boosty%", user.boostyName())
                     .replace("%level%", user.levelName()));
         } else {
-            sender.sendMessage(client.getMessageManager().getMessage("admin_info_not_linked").replace("%player%", args[2]));
+            sender.sendMessage(msg.getMessage("admin_info_not_linked").replace("%player%", args[2]));
         }
     }
 
     private void handleForceLink(CommandSender sender, String[] args) {
+        MessageManager msg = client.getMessageManager();
         if (args.length < 4) {
-            sender.sendMessage("§cИспользование: /boosty admin forcelink <игрок> <boosty_name>");
+            sender.sendMessage(msg.getMessage("error_use_forcelink"));
             return;
         }
+
         String targetName = args[2];
-        String boostyName = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
+        boolean silent = args[args.length - 1].equalsIgnoreCase("-s");
+        int boostyNameEnd = silent ? args.length - 1 : args.length;
+        String boostyName = String.join(" ", Arrays.copyOfRange(args, 3, boostyNameEnd));
+
         OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
-        String finalPlayerName = target.getName() != null ? target.getName() : targetName;
+        String finalName = target.getName() != null ? target.getName() : targetName;
 
         client.getBlogManager().getSubscriberData(boostyName).thenAccept(subData -> {
             String levelName = extractLevel(subData);
-            client.getDatabase().saveLink(target.getUniqueId(), finalPlayerName, boostyName, levelName);
-            sender.sendMessage(client.getMessageManager().getMessage("admin_forcelink_success")
-                .replace("%player%", finalPlayerName).replace("%boosty%", boostyName));
+
+            client.getDatabase().saveLink(target.getUniqueId(), finalName, boostyName, levelName);
             
-            if (target.isOnline()) {
-                target.getPlayer().sendMessage(client.getMessageManager().getMessage("admin_notify_forcelinked")
-                    .replace("%admin%", sender.getName()).replace("%boosty%", boostyName));
+            String notifyType = silent ? "subscription" : "admin_forcelink";
+            client.getDiscordManager().sendNotification(notifyType, finalName, boostyName, levelName);
+            
+            sender.sendMessage(msg.getMessage("admin_forcelink_success")
+                    .replace("%player%", finalName).replace("%boosty%", boostyName));
+            
+            if (!silent) {
+                if (target.isOnline()) {
+                    target.getPlayer().sendMessage(msg.getMessage("admin_notify_forcelinked")
+                            .replace("%admin%", sender.getName()).replace("%boosty%", boostyName));
+                }
+                msg.broadcastCongratulation(finalName, levelName);
             }
-            client.getMessageManager().broadcastCongratulation(finalPlayerName, levelName);
-            executeRewards(finalPlayerName, boostyName, levelName);
+            
+            executeRewards(finalName, boostyName, levelName);
+
         }).exceptionally(ex -> {
-            sender.sendMessage("§cОшибка: " + ex.getMessage());
+            sender.sendMessage("§cError: " + ex.getMessage());
             return null;
         });
     }
@@ -145,7 +176,9 @@ public class AdminSubCommand implements SubCommand {
             List<String> commands = client.getPlugin().getConfig().getStringList("rewards." + levelName + ".give");
             if (commands == null) return;
             for (String cmd : commands) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", playerName).replace("%boosty_name%", boostyName));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd
+                        .replace("%player%", playerName)
+                        .replace("%boosty_name%", boostyName));
             }
         });
     }

@@ -25,8 +25,10 @@ link_not_found: "&fПользователь с ником &#FFB6C1%name% &fне 
 link_already_linked: "&fЭтот аккаунт Boosty уже привязан к другому игроку!"
 link_already_yours: "&fВы уже привязали свой аккаунт!"
 link_error: "&fОшибка при проверке подписки."
+link_dm_prompt: "&fКод подтверждения отправлен вам в личные сообщения на Boosty. Введите его в чат."
 link_email_prompt: "&fЭтот аккаунт привязан к почте. Напишите её в чат для подтверждения (у вас 60 секунд):"
 link_email_fail: "&fПочта указана неверно. Привязка &#FFB6C1отменена&f."
+
 
 # /boosty info
 info_linked: "&fВаш аккаунт привязан к Boosty: &#FFB6C1%boosty% &f(Подписка: &#FFB6C1%level%&f)"
@@ -53,3 +55,11 @@ congratulation_message:
   - " &fИгрок &#FFB6C1{nickname} &fпривязал Boosty!"
   - " &fУровень подписки: &#FFB6C1{level_name}"
   - "&f▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+
+
+#errors
+error_not_found: "&cНеизвестная команда или недостаточно прав."
+error_use_admin: "&cИспользование: /boosty admin <unlink|info|forcelink|forcesync>"
+error_use_unlink: "&cИспользование: &#FFB6C1/boosty admin unlink <ник> [-s]"
+error_use_info: "&cИспользование: /boosty admin info <игрок>"
+error_use_forcelink: "&cИспользование: /boosty admin forcelink <игрок> <boosty_name>"

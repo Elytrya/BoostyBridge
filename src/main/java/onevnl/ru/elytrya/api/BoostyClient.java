@@ -11,6 +11,8 @@ import com.google.gson.Gson;
 
 import onevnl.ru.elytrya.api.managers.AuthManager;
 import onevnl.ru.elytrya.api.managers.BlogManager;
+import onevnl.ru.elytrya.api.managers.BoostyDMManager;
+import onevnl.ru.elytrya.api.managers.DiscordManager;
 import onevnl.ru.elytrya.api.managers.MessageManager;
 import onevnl.ru.elytrya.database.Database;
 import onevnl.ru.elytrya.database.MySQL;
@@ -18,7 +20,8 @@ import onevnl.ru.elytrya.database.SQLite;
 import onevnl.ru.elytrya.models.PendingLink;
 
 public class BoostyClient {
-
+    private DiscordManager discordManager;
+    private BoostyDMManager dmManager;
     private final JavaPlugin plugin;
     private final HttpClient httpClient;
     private final Gson gson;
@@ -44,7 +47,9 @@ public class BoostyClient {
         this.messageManager = new MessageManager(plugin);
         this.authManager = new AuthManager(this);
         this.blogManager = new BlogManager(this);
-
+        this.discordManager = new DiscordManager(this);
+        this.dmManager = new BoostyDMManager(this);
+        
         if (this.database != null) {
             this.database.disconnect();
         }
@@ -99,6 +104,14 @@ public class BoostyClient {
 
     public MessageManager getMessageManager() {
         return messageManager;
+    }
+
+    public DiscordManager getDiscordManager() {
+        return discordManager;
+    }
+
+    public BoostyDMManager getDmManager() {
+        return dmManager;
     }
 
     public AuthManager getAuthManager() {

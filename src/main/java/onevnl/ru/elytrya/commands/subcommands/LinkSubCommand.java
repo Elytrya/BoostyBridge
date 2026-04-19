@@ -2,6 +2,7 @@ package onevnl.ru.elytrya.commands.subcommands;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -67,23 +68,53 @@ public class LinkSubCommand implements SubCommand {
                         levelName = levelObj.get("name").getAsString();
                     }
                 }
-                
-                client.debug("Parsed subscription level: " + levelName);
+
+                var pluginConfig = client.getPlugin().getConfig();
+                boolean useDM = pluginConfig.getBoolean("dm_verification.enabled", false);
+
+                String userId = null;
+                if (subData.has("user") && subData.getAsJsonObject("user").has("id")) {
+                    userId = subData.getAsJsonObject("user").get("id").getAsString();
+                } else if (subData.has("id")) {
+                    userId = subData.get("id").getAsString();
+                }
+                client.debug("Subscriber userId for DM: " + (userId != null ? userId : "not found"));
+
+                if (useDM && userId != null) {
+                    final String finalBoostyName = boostyName;
+                    final String finalLevelName = levelName;
+                    final Player finalPlayer = player;
+                    final String code = String.format("%06d", ThreadLocalRandom.current().nextInt(1_000_000));
+
+                    client.getDmManager().sendVerificationCode(userId, code, player.getName())
+                            .thenAccept(success -> {
+                                if (success) {
+                                    client.getPendingLinks().put(finalPlayer.getUniqueId(),
+                                            new PendingLink(finalBoostyName, finalLevelName, code, "dm"));
+                                    finalPlayer.sendMessage(msg.getMessage("link_dm_prompt"));
+                                    client.debug("DM verification code sent successfully for " + finalBoostyName);
+                                } else {
+                                    finalPlayer.sendMessage(msg.getMessage("link_error"));
+                                }
+                            });
+                    return;
+                }
 
                 boolean hasEmail = subData.has("email") && !subData.get("email").isJsonNull() && !subData.get("email").getAsString().isEmpty();
-                boolean verifyEmail = client.getPlugin().getConfig().getBoolean("verify_email", true);
-                
+                boolean verifyEmail = pluginConfig.getBoolean("verify_email", true);
+
                 if (hasEmail && verifyEmail) {
                     String correctEmail = subData.get("email").getAsString();
                     client.debug("Subscriber has email. Adding to verification cache...");
-                    
-                    client.getPendingLinks().put(player.getUniqueId(), new PendingLink(boostyName, correctEmail, levelName));
+                    client.getPendingLinks().put(player.getUniqueId(),
+                            new PendingLink(boostyName, levelName, correctEmail, "email"));
                     player.sendMessage(msg.getMessage("link_email_prompt"));
                 } else {
-                    client.debug("No email verification required. Linking immediately.");
+                    client.debug("No verification required. Linking immediately.");
                     client.getDatabase().saveLink(player.getUniqueId(), player.getName(), boostyName, levelName);
                     player.sendMessage(msg.getMessage("link_success").replace("%name%", boostyName));
                     msg.broadcastCongratulation(player.getName(), levelName);
+                    client.getDiscordManager().sendNotification("subscription", player.getName(), boostyName, levelName);
                     executeRewards(player, boostyName, levelName);
                 }
             } else {

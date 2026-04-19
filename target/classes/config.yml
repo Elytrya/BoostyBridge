@@ -57,17 +57,52 @@ sync:
   interval_minutes: 60   
 
 # Discord Webhooks
-# (in a0.4)
-#discord:
- # enabled: true
- # webhook_url: "https://discord.com/"
- # embed_color: "#ff8c00"
- # message: "🎉 Player: **{player}**; lvl: **{level}**!" 
+discord:
+  enabled: false
+  webhook_url: "вебхук" # вставьте сюда свою ссылочку!
+  embed_color: "#FFB6C1"
+  
+  subscription:
+    enabled: true
+    title: "🚀 Новая подписка"
+    message: "Игрок **{player}** привязал Boosty: **{boosty_name}** (Уровень: **{level}**)"
+  unsubscription:
+    enabled: true
+    title: "🥀 Подписка истекла"
+    message: "У игрока **{player}** закончилась подписка уровня **{level}**"
+
+  # исп. флаг -s, чтобы событие отправилось как обычное (истечение / новая подписка)
+  # напр.: /boosty admin unlink elytrya -s => 🥀 Подписка истекла (unsubscription)
+  # или /boosty admin link elytrya elytrya -s > 🚀 Новая подписка (subscription)
+  admin_forcelink:
+    enabled: true
+    title: "🛠️ Принудительная привязка"
+    message: "Администратор принудительно привязал **{player}** к **{boosty_name}** (Уровень: **{level}**)"
+  admin_unlink:
+    enabled: true
+    title: "🛠️ Принудительная отвязка"
+    message: "Администратор отвязал игрока **{player}** от Boosty"
  
 
 
-# проверять ли почту пользователя, если мы ее знаем?
-# check the user's email if it is known?
+
+# отправка кода подтверждения в личные сообщения бусти
+# пользователю приходит сообщение с кодом, который он должен ввести в чат на сервере
+# для завершения привязки Minecraft-аккаунта.
+dm_verification:
+  enabled: true
+  message_template: |
+    Код подтверждения привязки Minecraft-аккаунта:
+    {code}
+
+    Игрок на сервере: {player}
+
+    Напишите этот код в чат сервера для завершения привязки.
+    Если вы не инициировали привязку — проигнорируйте сообщение.
+
+# проверять ли email пользователя (если он известен)
+# если включено, email будет использоваться как резервный способ (fallback),
+# если не удалось отправить сообщение в личные сообщения Boosty.
 verify_email: true 
 
 debug: false

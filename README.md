@@ -1,9 +1,6 @@
-
-
-
 # BoostyBridge
 
-[![Version](https://img.shields.io/badge/version-a0.4-orange)](#)
+[![Version](https://img.shields.io/badge/version-b0.2-orange)](#)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CodeFactor](https://www.codefactor.io/repository/github/elytrya/boostybridge/badge)](https://www.codefactor.io/repository/github/elytrya/boostybridge)
 [![Language](https://img.shields.io/badge/language-Java_17+-red)](#)
@@ -18,103 +15,123 @@
 [![Modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/modrinth_vector.svg)](https://modrinth.com/plugin/boostybridge)
 [![Hangar](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/hangar_vector.svg)](https://hangar.papermc.io/Elytrya/BoostyBridge)
 [![Spigot](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/spigot_vector.svg)](https://www.spigotmc.org/resources/boostybridge.133270/)
+
 ---
 
 ## Русский
 
-**BoostyBridge** — это плагин с открытым исходным кодом для серверов Minecraft, предоставляющий интеграцию с платформой Boosty.to. Плагин автоматизирует выдачу и снятие игровых привилегий за подписку на Boosty.
+**BoostyBridge** — это open-source плагин для серверов Minecraft с интеграцией Boosty.to. Он автоматически выдаёт и снимает игровые привилегии в зависимости от подписки пользователя.
 
-### Основные фишки
+### Основные возможности
 
-* **Умная защита от кражи наград:** Проверка владения аккаунтом через Email (скрыто от других игроков).
-* **Автоматическая синхронизация:** Фоновая проверка актуальности подписок и выполнение команд на снятие прав.
-* **Поддержка PlaceholderAPI:** Вывод данных о подписке в любые плагины (TAB, Scoreboard и т.д.).
-* **Метрики bStats:** Сбор анонимной статистики (отключается в конфиге: `bstats: false`).
-* **Базы данных:** Поддержка SQLite (по умолчанию) и MySQL для сетей серверов.
-* **Глобальные оповещения:** Красивые поздравления при оформлении подписки.
+* **Верификация через личные сообщения бусти:** Подтверждение привязки через код, отправленный в личные сообщения Boosty.
+* **Discord Webhook:** Отправка событий (подписка, отвязка, истечение) в Discord.
+* **Автоматическая синхронизация:** Проверка подписок в фоне и авто-снятие прав.
+* **PlaceholderAPI:** Интеграция с TAB, scoreboards и другими плагинами.
+* **Админ команды:** Принудительная отвязка, привязка, синхорнизация.
+* **Базы данных:** SQLite (по умолчанию) и MySQL.
 
-### Плейсхолдеры (PlaceholderAPI)
+### Плейсхолдеры
 
 | Плейсхолдер | Описание |
 | :--- | :--- |
-| `%boosty_global_subscribers%` | Общее количество подписчиков в профиле. |
-| `%boosty_level%` | Название уровня подписки игрока (или "None"). |
-| `%boosty_name%` | Имя пользователя на Boosty. |
-| `%boosty_is_linked%` | Привязан ли аккаунт (`true`/`false`). |
-| `%boosty_has_sub%` | Есть ли активная подписка (`true`/`false`). |
+| `%boosty_global_subscribers%` | Общее число подписчиков |
+| `%boosty_level%` | Уровень подписки |
+| `%boosty_name%` | Ник на Boosty |
+| `%boosty_is_linked%` | Привязан ли аккаунт |
+| `%boosty_has_sub%` | Есть ли подписка |
 
-### Команды и права
+### Команды
 
 | Команда | Описание | Права |
 | :--- | :--- | :--- |
-| `/boosty link <ник>` | Привязать аккаунт Boosty. | Доступно всем |
-| `/boosty info` | Узнать статус своей привязки. | Доступно всем |
-| `/boosty reload` | Перезагрузить конфиг плагина. | `boosty.admin` |
-| `/boosty admin info <игрок>` | Проверить данные игрока. | `boosty.admin` |
-| `/boosty admin unlink <игрок>` | Отвязать аккаунт игрока. | `boosty.admin` |
-| `/boosty admin forcelink <игрок> <ник>` | Привязать аккаунт принудительно. | `boosty.admin` |
+| `/boosty link <ник>` | Привязка Boosty | Все |
+| `/boosty info` | Проверка статуса | Все |
+| `/boosty reload` | Перезагрузка | `boosty.admin` |
+| `/boosty admin info <игрок>` | Информация об игроке | `boosty.admin` |
+| `/boosty admin unlink <игрок>` | Отвязка | `boosty.admin` |
+| `/boosty admin forcelink <игрок> <ник>` | Принудительная привязка | `boosty.admin` |
+| `/boosty admin forcesync` | Принудительная синхронизация | `boosty.admin` |
 
-### todo
-- [x] Интеграция с PlaceholderAPI.
-- [ ] Альтернативная верификация через личные сообщения Boosty.
-- [x] Команда ручной синхронизации (`/boosty admin forcesync`).
-- [ ] Улучшенная обработка ошибок API и лимитов запросов.
-- [ ] Оптимизация кэша и работа с нестандартными символами.
+### Верификация при привязке аккаунта бусти
+
+Доступны несколько способов:
+
+1. **Через личку бусти (основной)**
+   - Пользователь получает код в личные сообщения
+   - Вводит его на сервере
+
+2. **Email (fallback)**
+   - Используется, если в лс бусти отправить не удалось
+
+### ✅ TODO
+
+- [x] PlaceholderAPI
+- [x] DM-верификация
+- [x] Discord webhook
+- [x] Ручная синхронизация
+(если появились идеи - создайте issues)
 
 ---
 
 ## English
 
-**BoostyBridge** is an open-source plugin for Minecraft servers that provides integration with the Boosty.to platform. The plugin automates the process of giving and taking away in-game rewards for Boosty subscriptions.
+**BoostyBridge** is an open-source Minecraft plugin that integrates Boosty.to with your server. It automates reward management based on user subscriptions.
 
-### Main Features
+### Features
 
-* **Smart Reward Protection:** Email verification to confirm account ownership (hidden from others).
-* **Automatic Synchronization:** Background checks for active subscriptions and automatic perk removal.
-* **PlaceholderAPI Support:** Display Boosty data in other plugins like TAB or Scoreboards.
-* **bStats Metrics:** Anonymous data collection (can be disabled in `config.yml` via `bstats: false`).
-* **Database Support:** SQLite (default) and MySQL support for server networks.
-* **Global Announcements:** Customizable broadcast messages when a player links a subscription.
+* **Secure Reward System:** Ownership verification via Email or Boosty DMs.
+* **DM Verification:** Link accounts using a code sent via Boosty direct messages.
+* **Discord Webhook Support:** Send events directly to Discord.
+* **Automatic Sync:** Background subscription checks.
+* **PlaceholderAPI Support**
+* **bStats Metrics**
+* **SQLite / MySQL support**
 
-### Placeholders (PlaceholderAPI)
+### Placeholders
 
 | Placeholder | Description |
 | :--- | :--- |
-| `%boosty_global_subscribers%` | Total count of active subscribers on the profile. |
-| `%boosty_level%` | Subscription level name (returns "None" if no sub). |
-| `%boosty_name%` | User's Boosty display name. |
-| `%boosty_is_linked%` | Account linkage status (`true`/`false`). |
-| `%boosty_has_sub%` | Whether the player has any active sub (`true`/`false`). |
+| `%boosty_global_subscribers%` | Total subscribers |
+| `%boosty_level%` | Subscription level |
+| `%boosty_name%` | Boosty username |
+| `%boosty_is_linked%` | Linked status |
+| `%boosty_has_sub%` | Has active sub |
 
-### Commands & Permissions
+### Commands
 
 | Command | Description | Permission |
 | --- | --- | --- |
-| `/boosty link <name>` | Link a Boosty account. | None |
-| `/boosty info` | Check your link status. | None |
-| `/boosty reload` | Reload the plugin config. | `boosty.admin` |
-| `/boosty admin info <player>` | Check a player's data. | `boosty.admin` |
-| `/boosty admin unlink <player>` | Unlink a player's account. | `boosty.admin` |
-| `/boosty admin forcelink <player> <name>` | Force link an account. | `boosty.admin` |
+| `/boosty link <name>` | Link account | None |
+| `/boosty info` | Check status | None |
+| `/boosty reload` | Reload config | `boosty.admin` |
+| `/boosty admin info <player>` | Player info | `boosty.admin` |
+| `/boosty admin unlink <player>` | Unlink | `boosty.admin` |
+| `/boosty admin forcelink <player> <name>` | Force link | `boosty.admin` |
+| `/boosty admin forcesync` | Force sync | `boosty.admin` |
 
-### todo
+### Verification Methods
 
-* [x] PlaceholderAPI integration.
-* [ ] Alternative verification via Boosty Direct Messages.
-* [x] Manual synchronization command (`/boosty admin forcesync`).
-* [ ] Improved API error handling and rate limit protection.
-* [ ] General optimization and special character handling.
+1. **Boosty DM (primary)**
+2. **Email (fallback if DM fails)**
 
-### Build Instructions
+### TODO
+
+- [x] PlaceholderAPI
+- [x] DM verification
+- [x] Discord webhook
+- [x] Manual sync command
+
+---
+
+## Build
 
 ```bash
-git clone [https://github.com/Elytrya/BoostyBridge](https://github.com/Elytrya/BoostyBridge)
+git clone https://github.com/Elytrya/BoostyBridge
 cd BoostyBridge
 mvn clean package
-
 ```
 
-### License
 
-This project is licensed under the **GPL-3.0 License**.
-
+##  License
+Licensed under GPL-3.0

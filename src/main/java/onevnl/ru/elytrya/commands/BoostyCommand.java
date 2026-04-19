@@ -13,12 +13,14 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import onevnl.ru.elytrya.api.BoostyClient;
+import onevnl.ru.elytrya.api.managers.MessageManager;
 import onevnl.ru.elytrya.commands.subcommands.AdminSubCommand;
 import onevnl.ru.elytrya.commands.subcommands.InfoSubCommand;
 import onevnl.ru.elytrya.commands.subcommands.LinkSubCommand;
 import onevnl.ru.elytrya.commands.subcommands.ReloadSubCommand;
 import onevnl.ru.elytrya.commands.subcommands.SubCommand;
 import onevnl.ru.elytrya.models.BoostyUser;
+
 
 public class BoostyCommand implements CommandExecutor, TabCompleter {
     private final BoostyClient client;
@@ -43,11 +45,13 @@ public class BoostyCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        MessageManager msg = client.getMessageManager();
         SubCommand sub = subCommands.get(args[0].toLowerCase());
         if (sub != null && (sub.getPermission() == null || sender.hasPermission(sub.getPermission()))) {
             sub.execute(sender, args);
         } else {
-            sender.sendMessage("§cНеизвестная команда или недостаточно прав.");
+            sender.sendMessage(msg.getMessage("error_not_found"));
+
         }
         return true;
     }

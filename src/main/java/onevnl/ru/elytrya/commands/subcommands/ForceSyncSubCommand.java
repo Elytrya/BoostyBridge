@@ -28,11 +28,10 @@ public class ForceSyncSubCommand implements SubCommand {
     public void execute(CommandSender sender, String[] args) {
         MessageManager msg = client.getMessageManager();
         
-        // Берем сообщения из конфига
         sender.sendMessage(msg.getMessage("admin_forcesync_started"));
         
-        // Запускаем саму синхронизацию
-        new SubscriptionSyncTask(client).runTaskAsynchronously(client.getPlugin());
+
+        new SubscriptionSyncTask(client).runTaskAsynchronously(client.getPlugin()); //rewrite!
         
         sender.sendMessage(msg.getMessage("admin_forcesync_async"));
     }

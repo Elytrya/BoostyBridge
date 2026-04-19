@@ -1,67 +1,64 @@
 package onevnl.ru.elytrya.api.managers;
 
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.configuration.ConfigurationSection;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import onevnl.ru.elytrya.api.BoostyClient;
+
 public class DiscordManager {
+    private final BoostyClient client;
+    private final HttpClient httpClient;
 
-    private final JavaPlugin plugin;
-    private final boolean enabled;
-    private final String webhookUrl;
-    private final String embedColor;
-    private final String messageTemplate;
-
-    public DiscordManager(JavaPlugin plugin) {
-        this.plugin = plugin;
-        this.enabled = plugin.getConfig().getBoolean("discord.enabled", false);
-        this.webhookUrl = plugin.getConfig().getString("discord.webhook_url", "");
-        this.embedColor = plugin.getConfig().getString("discord.embed_color", "#ff8c00");
-        this.messageTemplate = plugin.getConfig().getString("discord.message", "🎉 Игрок **{player}** оформил подписку уровня **{level}**!");
+    public DiscordManager(BoostyClient client) {
+        this.client = client;
+        this.httpClient = HttpClient.newHttpClient();
     }
 
-    public void sendWebhook(String playerName, String levelName) {
-        if (!enabled || webhookUrl == null || webhookUrl.isEmpty() || webhookUrl.contains("твой_вебхук")) {
-            return;
-        }
+    public void sendNotification(String type, String playerName, String boostyName, String levelName) {
+        ConfigurationSection config = client.getPlugin().getConfig().getConfigurationSection("discord");
+        if (config == null || !config.getBoolean("enabled", false)) return;
 
-        if (levelName == null || levelName.equalsIgnoreCase("none")) {
-            return;
-        }
+        String webhookUrl = config.getString("webhook_url", "");
+        if (webhookUrl.isEmpty() || webhookUrl.contains("YOUR_WEBHOOK")) return;
 
-        String content = messageTemplate.replace("{player}", playerName).replace("{level}", levelName);
+        ConfigurationSection event = config.getConfigurationSection(type);
+        if (event == null || !event.getBoolean("enabled", true)) return;
+
+        String description = event.getString("message", "")
+                .replace("{player}", playerName)
+                .replace("{boosty_name}", boostyName != null ? boostyName : "N/A")
+                .replace("{level}", levelName != null ? levelName : "none");
 
         JsonObject embed = new JsonObject();
-        embed.addProperty("description", content);
+        embed.addProperty("title", event.getString("title", "Notification"));
+        embed.addProperty("description", description);
         
         try {
-            embed.addProperty("color", Integer.parseInt(embedColor.replace("#", ""), 16));
+            String colorHex = config.getString("embed_color", "#FFB6C1").replace("#", "");
+            embed.addProperty("color", Integer.parseInt(colorHex, 16));
         } catch (Exception e) {
-            embed.addProperty("color", 16747520); 
+            embed.addProperty("color", 16758465);
         }
 
         JsonArray embeds = new JsonArray();
         embeds.add(embed);
-
         JsonObject payload = new JsonObject();
         payload.add("embeds", embeds);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(webhookUrl))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(payload.toString()))
+                .POST(HttpRequest.BodyPublishers.ofString(payload.toString(), StandardCharsets.UTF_8))
                 .build();
 
-        java.net.http.HttpClient.newHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(response -> {
-                    if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                        plugin.getLogger().warning("Failed to send Discord webhook. Response: " + response.body());
-                    }
-                });
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
     }
 }
