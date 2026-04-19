@@ -57,7 +57,7 @@ sync:
   interval_minutes: 60   
 
 # Discord Webhooks
-# (in a0.4)
+# (in a0.5)
 #discord:
  # enabled: true
  # webhook_url: "https://discord.com/"
