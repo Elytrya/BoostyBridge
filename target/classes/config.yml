@@ -39,7 +39,7 @@ database:
 
 rewards:
   "Спонсор +":
-    congratulation: true # - changed in messages.yml (congratulation_message)
+    congratulation: true # - меняется в messages.yml (congratulation_message)
     give:
       - "say спонсор+"
     take:
