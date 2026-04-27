@@ -29,7 +29,7 @@ public class AdminSubCommand implements SubCommand {
 
     @Override
     public String getPermission() {
-        return "boosty.admin";
+        return null;
     }
 
     @Override
@@ -41,6 +41,12 @@ public class AdminSubCommand implements SubCommand {
         }
 
         String action = args[1].toLowerCase();
+
+        if (!sender.hasPermission("boosty.admin." + action)) {
+            sender.sendMessage("§cУ вас нет прав: boosty.admin." + action);
+            return;
+        }
+
         switch (action) {
             case "unlink":
                 handleUnlink(sender, args);

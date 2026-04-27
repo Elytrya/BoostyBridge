@@ -1,5 +1,5 @@
 main: onevnl.ru.elytrya.BoostyBridge
-version: b0.1
+version: b0.2
 name: BoostyBridge
 author: elytrya
 api-version: 1.21
@@ -9,8 +9,42 @@ softdepend: [PlaceholderAPI]
 commands:
   boosty:
     description: Основная команда плагина BoostyBridge
-    permission: boosty.admin
+
 permissions:
-  boosty.admin:
-    description: Доступ к управлению плагином
+  boosty.link:
+    description: Доступ к привязке аккаунта
+    default: true
+  boosty.info:
+    description: Доступ к просмотру своей информации
+    default: true
+  boosty.reload:
+    description: Доступ к перезагрузке плагина
     default: op
+  boosty.admin.unlink:
+    description: Доступ к отвязке чужих аккаунтов
+    default: op
+  boosty.admin.info:
+    description: Доступ к просмотру чужой информации
+    default: op
+  boosty.admin.forcelink:
+    description: Доступ к принудительной привязке
+    default: op
+  boosty.admin.forcesync:
+    description: Доступ к принудительной синхронизации
+    default: op
+  boosty.admin.*:
+    description: Все административные права
+    default: op
+    children:
+      boosty.reload: true
+      boosty.admin.unlink: true
+      boosty.admin.info: true
+      boosty.admin.forcelink: true
+      boosty.admin.forcesync: true
+  boosty.*:
+    description: Вообще все права плагина
+    default: op
+    children:
+      boosty.link: true
+      boosty.info: true
+      boosty.admin.*: true
