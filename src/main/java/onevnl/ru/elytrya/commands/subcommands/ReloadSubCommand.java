@@ -20,7 +20,7 @@ public class ReloadSubCommand implements SubCommand {
 
     @Override
     public String getPermission() {
-        return "boosty.admin";
+        return "boosty.reload";
     }
 
     @Override

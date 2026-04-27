@@ -21,7 +21,6 @@ import onevnl.ru.elytrya.commands.subcommands.ReloadSubCommand;
 import onevnl.ru.elytrya.commands.subcommands.SubCommand;
 import onevnl.ru.elytrya.models.BoostyUser;
 
-
 public class BoostyCommand implements CommandExecutor, TabCompleter {
     private final BoostyClient client;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
@@ -47,50 +46,59 @@ public class BoostyCommand implements CommandExecutor, TabCompleter {
 
         MessageManager msg = client.getMessageManager();
         SubCommand sub = subCommands.get(args[0].toLowerCase());
-        if (sub != null && (sub.getPermission() == null || sender.hasPermission(sub.getPermission()))) {
-            sub.execute(sender, args);
+        
+        if (sub != null) {
+            if (sub.hasPermission(sender)) {
+                sub.execute(sender, args);
+            } else {
+                sender.sendMessage("§cУ вас нет прав!"); 
+            }
         } else {
             sender.sendMessage(msg.getMessage("error_not_found"));
-
         }
         return true;
     }
 
     private void sendHelp(CommandSender sender) {
-            List<String> userHelp = client.getMessageManager().getMessageList("help_menu");
-            if (userHelp != null) {
-                for (String line : userHelp) {
+        List<String> userHelp = client.getMessageManager().getMessageList("help_menu");
+        if (userHelp != null) {
+            for (String line : userHelp) {
+                sender.sendMessage(line);
+            }
+        }
+
+        if (sender.hasPermission("boosty.admin.unlink") || sender.hasPermission("boosty.admin.info")) {
+            List<String> adminHelp = client.getMessageManager().getMessageList("help_menu_admin");
+            if (adminHelp != null) {
+                for (String line : adminHelp) {
                     sender.sendMessage(line);
                 }
             }
-
-            if (sender.hasPermission("boosty.admin")) {
-                List<String> adminHelp = client.getMessageManager().getMessageList("help_menu_admin");
-                if (adminHelp != null) {
-                    for (String line : adminHelp) {
-                        sender.sendMessage(line);
-                    }
-                }
-            }
         }
+    }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
             String input = args[0].toLowerCase();
-            subCommands.keySet().stream().filter(s -> s.startsWith(input)).forEach(completions::add);
-        } else if (args.length >= 2 && args[0].equalsIgnoreCase("admin") && sender.hasPermission("boosty.admin")) {
-            handleAdminTab(completions, args);
+            subCommands.values().stream()
+                .filter(sub -> sub.hasPermission(sender))
+                .map(SubCommand::getName)
+                .filter(name -> name.startsWith(input))
+                .forEach(completions::add);
+        } else if (args.length >= 2 && args[0].equalsIgnoreCase("admin")) {
+            handleAdminTab(sender, completions, args);
         }
         return completions;
     }
 
-    private void handleAdminTab(List<String> list, String[] args) {
+    private void handleAdminTab(CommandSender sender, List<String> list, String[] args) {
         if (args.length == 2) {
             String input = args[1].toLowerCase();
-            for (String s : new String[]{"unlink", "info", "forcelink","forcesync"}) {
-                if (s.startsWith(input)) {
+            String[] adminActions = {"unlink", "info", "forcelink", "forcesync"};
+            for (String s : adminActions) {
+                if (s.startsWith(input) && sender.hasPermission("boosty.admin." + s)) {
                     list.add(s);
                 }
             }

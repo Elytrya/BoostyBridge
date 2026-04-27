@@ -30,7 +30,7 @@ public class LinkSubCommand implements SubCommand {
 
     @Override
     public String getPermission() {
-        return null;
+        return "boosty.link";
     }
 
     @Override

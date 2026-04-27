@@ -21,7 +21,7 @@ public class ForceSyncSubCommand implements SubCommand {
 
     @Override
     public String getPermission() {
-        return "boosty.admin";
+        return "boosty.admin.forcesync";
     }
 
     @Override

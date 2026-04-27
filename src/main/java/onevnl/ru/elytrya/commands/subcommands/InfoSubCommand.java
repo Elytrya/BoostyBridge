@@ -21,7 +21,7 @@ public class InfoSubCommand implements SubCommand {
 
     @Override
     public String getPermission() {
-        return null;
+        return "boosty.info";
     }
 
     @Override
