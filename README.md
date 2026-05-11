@@ -9,6 +9,7 @@
 [![GitHub branches](https://badgen.net/github/branches/Elytrya/BoostyBridge)](https://github.com/Elytrya/BoostyBridge/)
 [![GitHub commits](https://badgen.net/github/commits/Elytrya/BoostyBridge)](https://GitHub.com/Elytrya/BoostyBridge/commit/)
 [![GitHub issues](https://badgen.net/github/issues/Elytrya/BoostyBridge/)](https://GitHub.com/Elytrya/BoostyBridge/issues/)
+[![GitHub Downloads](https://img.shields.io/github/downloads/elytrya/boostybridge/total?&label=GitHub%20Downloads)](https://github.com/elytrya/boostybridge/releases)
 
 [🇷🇺 Русский](#русский) | [🇬🇧 English](#english)
 
